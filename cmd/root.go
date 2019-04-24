@@ -42,6 +42,7 @@ func init() {
 	// when this action is called directly.
 	RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
+	// logrus.SetLevel(logrus.DebugLevel)
 }
 
 // RootCmd represents the base command when called without any subcommands
@@ -55,13 +56,12 @@ var RootCmd = &cobra.Command{
 
 would roll (2) 4-sided dice. Other valid configurations:
 
-	Input			Description
-	1d20+4			(1) 20-sided die, with a modifier of 4 added
-	4d6 drop lowest	(4) 6-sided dice, with the lowest value dropped`,
+	Input: Description
+` + matchers.AllExamples(),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// combine all args into one string
 		allArgs := strings.Join(args, "")
-		result, err := roll(allArgs)
+		_, result, err := roll(allArgs)
 		if err != nil {
 			return err
 		}
@@ -70,12 +70,12 @@ would roll (2) 4-sided dice. Other valid configurations:
 	},
 }
 
-func roll(input string) (int, error) {
+func roll(input string) (int, string, error) {
 	for _, m := range matchers.All() {
 		if m.Matches(input) {
 			return m.Run(input)
 		}
 	}
 
-	return -1, fmt.Errorf("unrecognized input %s", input)
+	return -1, "", fmt.Errorf("unrecognized input %s", input)
 }

@@ -16,6 +16,18 @@ func TestSimpleMatcher(t *testing.T) {
 			input:         "1d20",
 			expectMatches: true,
 		},
+		{
+			input:         "3d12",
+			expectMatches: true,
+		},
+		{
+			input:         "1d10+4",
+			expectMatches: true,
+		},
+		{
+			input:         "1d10-199",
+			expectMatches: true,
+		},
 	}
 
 	sm := newSimpleMatcher()
@@ -28,7 +40,7 @@ func TestSimpleMatcher(t *testing.T) {
 				}
 				t.Fatalf("simplematcher should not match %s, but does", c.input)
 			}
-			_, err := sm.Run(c.input)
+			_, _, err := sm.Run(c.input)
 			err = checkError(err, c.expectError)
 			if err != nil {
 				t.Fatal(err)
