@@ -2,8 +2,6 @@ package matchers
 
 import (
 	"fmt"
-	"math/rand"
-	"time"
 )
 
 type Matcher interface {
@@ -26,11 +24,4 @@ func AllExamples() string {
 		ret += fmt.Sprintf("\t%s: %s\n", input, desc)
 	}
 	return ret
-}
-
-func r(max int) int {
-	seed := time.Now().UnixNano()
-	rand.Seed(seed)
-	// instead of returning [0,max), we want to return [1,max]
-	return rand.Intn(max) + 1
 }

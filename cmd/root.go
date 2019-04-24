@@ -19,9 +19,12 @@ import (
 	"os"
 	"strings"
 
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/spilliams/dice/cmd/matchers"
+	"github.com/spilliams/dice/matchers"
 )
+
+var Verbose bool
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
@@ -33,16 +36,21 @@ func Execute() {
 }
 
 func init() {
+	cobra.OnInitialize(initConfig)
 
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
+	RootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "Turn on verbose logging")
+}
 
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+func initConfig() {
+	if Verbose {
+		logrus.SetLevel(logrus.DebugLevel)
+	} else {
+		logrus.SetLevel(logrus.InfoLevel)
+	}
+	logrus.SetOutput(RootCmd.OutOrStdout())
+	logrus.StandardLogger().Formatter.(*logrus.TextFormatter).DisableTimestamp = true
+	logrus.StandardLogger().Formatter.(*logrus.TextFormatter).DisableLevelTruncation = true
 
-	// logrus.SetLevel(logrus.DebugLevel)
 }
 
 // RootCmd represents the base command when called without any subcommands

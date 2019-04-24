@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/sirupsen/logrus"
+	"github.com/spilliams/dice/dice"
 )
 
 var pattern = regexp.MustCompile(`^([0-9]*)d([0-9]*)([+-]?[0-9]*)$`)
@@ -46,10 +47,10 @@ func (sm simpleMatcher) Run(input string) (int, string, error) {
 	}
 
 	// compute!
+	rolls := dice.NdM(numDice, dieMax)
 	sum := 0
 	calca := ""
-	for i := 0; i < numDice; i++ {
-		roll := r(dieMax)
+	for i, roll := range rolls {
 		if i > 0 {
 			calca += "+"
 		}
