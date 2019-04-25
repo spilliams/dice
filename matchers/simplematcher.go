@@ -9,7 +9,7 @@ import (
 	"github.com/spilliams/dice/dice"
 )
 
-var pattern = regexp.MustCompile(`^([0-9]*)d([0-9]*)([+-]?[0-9]*)$`)
+var pattern = regexp.MustCompile(`^([0-9]+)d([0-9]+)([+-]{1}[0-9]+)?$`)
 
 type simpleMatcher struct{}
 
