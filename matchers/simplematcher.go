@@ -9,7 +9,7 @@ import (
 	"github.com/spilliams/dice/dice"
 )
 
-var pattern = regexp.MustCompile(`^([0-9]+)d([0-9]+)([+-]{1}[0-9]+)?$`)
+var simplePattern = regexp.MustCompile(`^([0-9]+)d([0-9]+)([+-]{1}[0-9]+)?$`)
 
 type simpleMatcher struct{}
 
@@ -22,12 +22,12 @@ func (sm simpleMatcher) Example() (string, string) {
 }
 
 func (sm simpleMatcher) Matches(input string) bool {
-	return pattern.MatchString(input)
+	return simplePattern.MatchString(input)
 }
 
 func (sm simpleMatcher) Run(input string) (int, string, error) {
 	// parse the input
-	parts := pattern.FindStringSubmatch(input)
+	parts := simplePattern.FindStringSubmatch(input)
 	logrus.Debug(parts)
 	numDice, err := strconv.Atoi(parts[1])
 	if err != nil {

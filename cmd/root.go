@@ -26,6 +26,8 @@ import (
 
 var Verbose bool
 
+var Matchers = matchers.All()
+
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
@@ -64,11 +66,10 @@ var RootCmd = &cobra.Command{
 
 would roll (2) 4-sided dice. Other valid configurations:
 
-	Input: Description
-` + matchers.AllExamples(),
+` + makeExamples(),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// combine all args into one string
-		allArgs := strings.Join(args, "")
+		allArgs := strings.Join(args, " ")
 		_, result, err := roll(allArgs)
 		if err != nil {
 			return err
@@ -78,8 +79,38 @@ would roll (2) 4-sided dice. Other valid configurations:
 	},
 }
 
+func makeExamples() string {
+	// examples := matchers.AllExamples()
+	inputs := make([]string, len(Matchers))
+	descriptions := make([]string, len(Matchers))
+	maxInput := 0
+	for i, m := range Matchers {
+		input, desc := m.Example()
+		inputs[i] = input
+		descriptions[i] = desc
+		if len(input) > maxInput {
+			maxInput = len(input)
+		}
+	}
+
+	gutter := "  "
+	ret := "\tInput"
+	for i := 0; i < maxInput-5; i++ {
+		ret += " "
+	}
+	ret += gutter + "Description\n"
+	for i := 0; i < len(Matchers); i++ {
+		ret += "\t" + inputs[i]
+		for j := 0; j < maxInput-len(inputs[i]); j++ {
+			ret += " "
+		}
+		ret += gutter + descriptions[i] + "\n"
+	}
+	return ret
+}
+
 func roll(input string) (int, string, error) {
-	for _, m := range matchers.All() {
+	for _, m := range Matchers {
 		if m.Matches(input) {
 			return m.Run(input)
 		}
